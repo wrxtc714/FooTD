@@ -1,0 +1,6 @@
+FooTD
+
+Dependencies:
+
+hg clone https://code.google.com/p/andengine/
+hg clone https://code.google.com/p/andenginemultitouchextension/
