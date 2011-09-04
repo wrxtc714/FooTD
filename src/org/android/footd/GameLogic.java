@@ -65,7 +65,7 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 	public void onLoadResources() {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		BuildableBitmapTextureAtlas bitmapTextureAtlas = new BuildableBitmapTextureAtlas(512, 256, TextureOptions.NEAREST);
+		BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(512, 256, TextureOptions.NEAREST);
 		
 		BitmapTextureAtlas mobAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
 		mobRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mobAtlas, this, "player.png", 0, 0, 3, 4);
