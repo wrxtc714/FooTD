@@ -6,7 +6,6 @@ import org.anddev.andengine.entity.modifier.PathModifier;
 import org.anddev.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.modifier.ease.EaseSineInOut;
 
@@ -15,8 +14,10 @@ public class Mob extends AnimatedSprite {
 	MobType type;
 	int level;
 
-	public Mob(float pX, float pY,float pWidth, float pHeight, TiledTextureRegion pTiledTextureRegion, Path path) {
-		super(pX, pY, pWidth, pHeight, pTiledTextureRegion);
+	public Mob(MobType type, Path path) {
+		super(0, 0, type.size.x, type.size.y, type.texture);
+//		super(0, 0, type.texture);
+		this.type = type;
 		addPath(path);
 	}
 
