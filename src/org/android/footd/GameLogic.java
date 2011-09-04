@@ -69,7 +69,7 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		mobRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mobAtlas, this, "player.png", 0, 0, 3, 4);
 		mEngine.getTextureManager().loadTexture(mobAtlas);
 		
-		level = Level.createTestLevel(this, mEngine);
+		level = Level.createTestLevel(this, mEngine, "grass2.jpg");
 		
 	}
 
@@ -78,9 +78,11 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		mEngine.registerUpdateHandler(new FPSLogger());
 
 		scene = new Scene();
+		level.load(scene);
 		
 		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")), scene);
 		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Cannon Tower")), scene);
+		
 		
 		for (int i = 0; i < 20; i++){
 			
@@ -95,6 +97,23 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 			
 			scene.attachChild(new Mob(0,0, 48, 64, mobRegion, path));
 		}
+		
+		// TOUCH STUFF
+		scrollDetector = new SurfaceScrollDetector(this);
+		if(MultiTouch.isSupportedByAndroidVersion()) {
+			try {
+				pinchZoomDetector = new PinchZoomDetector(this);
+			} catch (final MultiTouchException e) {
+				pinchZoomDetector = null;
+			}
+		} else {
+			pinchZoomDetector = null;
+		}
+
+		scene.setOnSceneTouchListener(this);
+		scene.setTouchAreaBindingEnabled(true);		
+		
+		
 		return scene;
 	}
 

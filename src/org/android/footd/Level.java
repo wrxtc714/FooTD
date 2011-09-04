@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.entity.scene.Scene;
+import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.sprite.TiledSprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.region.TextureRegion;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -26,6 +28,8 @@ public class Level {
 	List<Wave> waves = new ArrayList<Wave>();
 	List<GridObject> entrances = new ArrayList<GridObject>();
 	List<GridObject> exits = new ArrayList<GridObject>();
+	
+	private TextureRegion fullBackGround;
 	
 	GridObject[][] placedObjects;
 	TiledSprite background;
@@ -45,7 +49,7 @@ public class Level {
 	 * @param context BaseGameActivity
 	 * @return the created level
 	 */
-	public static Level createTestLevel(Context context, Engine engine) {
+	public static Level createTestLevel(Context context, Engine engine, String background) {
 		Level level = new Level(new Point(10,10));
 		
 		TowerType flameTowerType = new TowerType();
@@ -70,12 +74,29 @@ public class Level {
 		engine.getTextureManager().loadTexture(cannonTowerTypeAtlas);
 		level.towerTypes.put(cannonTowerType.name, cannonTowerType);
 		
+		// Load Background Recources
+		
+		BitmapTextureAtlas backGroundAtlas = new BitmapTextureAtlas(2048, 2048, TextureOptions.BILINEAR);
+		level.fullBackGround = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGroundAtlas, context, background, 0, 0);
+		engine.getTextureManager().loadTexture(backGroundAtlas);
+		
 				
 		return level;
 	}
 	
 	public static Level createLevelFromXML(BuildableBitmapTextureAtlas bitmapTextureAtlas, Context context) {
 		return null; //TODO
+	}
+	
+	public void load(Scene scene) {
+		/* Calculate the coordinates for the face, so its centered on the camera. */
+//		final int centerX = (- fullBackGround.getWidth()) / 2;
+//		final int centerY = (- fullBackGround.getHeight()) / 2;
+
+		/* Create the face and add it to the scene. */
+		final Sprite backGroundSprite = new Sprite(0, 0, fullBackGround);
+		scene.attachChild(backGroundSprite);
+		
 	}
 	
 	public void addTower(Tower tower, Scene scene) {
