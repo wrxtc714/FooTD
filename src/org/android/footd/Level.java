@@ -55,7 +55,7 @@ public class Level {
 		flameTowerType.damage = 5;
 		flameTowerType.size = new Point(1,1);
 		BitmapTextureAtlas flameTowerTypeAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
-		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(flameTowerTypeAtlas, context, "player.png", 0, 0, 3, 4);
+		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(flameTowerTypeAtlas, context, "helicopter_tiled.png", 0, 0, 2, 2);
 		engine.getTextureManager().loadTexture(flameTowerTypeAtlas);
 		level.towerTypes.put(flameTowerType.name, flameTowerType);
 		
@@ -65,8 +65,8 @@ public class Level {
 		cannonTowerType.speed = 5;
 		cannonTowerType.damage = 100;
 		cannonTowerType.size = new Point(2,2);
-		BitmapTextureAtlas cannonTowerTypeAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
-		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(cannonTowerTypeAtlas, context, "player.png", 0, 0, 3, 4);
+		BitmapTextureAtlas cannonTowerTypeAtlas = new BitmapTextureAtlas(256, 128, TextureOptions.DEFAULT);
+		cannonTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(cannonTowerTypeAtlas, context, "banana_tiled.png", 0, 0, 4, 2);
 		engine.getTextureManager().loadTexture(cannonTowerTypeAtlas);
 		level.towerTypes.put(cannonTowerType.name, cannonTowerType);
 		
@@ -89,6 +89,7 @@ public class Level {
 			placedObjects[tower.gridCoord.x][tower.gridCoord.y] = tower;
 		}
 		towers.add(tower);
+		tower.animate(100);
 		scene.attachChild(tower);
 	}
 }

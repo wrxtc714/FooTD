@@ -80,7 +80,7 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		scene = new Scene();
 		
 		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")), scene);
-		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Flame Tower")), scene);
+		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Cannon Tower")), scene);
 		
 		for (int i = 0; i < 20; i++){
 			
