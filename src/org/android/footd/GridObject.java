@@ -14,6 +14,7 @@ public class GridObject extends AnimatedSprite {
 	
 	public GridObject(Point gridCoord, TiledTextureRegion pTiledTextureRegion) {
 		super(convertGridPointToFloatPoint(gridCoord).x, convertGridPointToFloatPoint(gridCoord).y, pTiledTextureRegion);
+		this.gridCoord = gridCoord;
 	}
 
 	public static FloatPoint convertGridPointToFloatPoint(Point gridCoord){
