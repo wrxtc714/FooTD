@@ -39,9 +39,9 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 	private TiledTextureRegion mobRegion;
 	
 	//mutitouch stuff
-	private SurfaceScrollDetector mScrollDetector;
-	private PinchZoomDetector mPinchZoomDetector;
-	private float mPinchZoomStartedCameraZoomFactor;
+	private SurfaceScrollDetector scrollDetector;
+	private PinchZoomDetector pinchZoomDetector;
+	private float pinchZoomStartedCameraZoomFactor;
 	
 	@Override
 	public Engine onLoadEngine() {		
@@ -52,7 +52,7 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 			if(MultiTouch.isSupported(this)) {
 				engine.setTouchController(new MultiTouchController());
 			} else {
-				Toast.makeText(this, "Sorry your device does NOT support MultiTouch!\n\n(No PinchZoom is possible!)", Toast.LENGTH_LONG).show();
+//				Toast.makeText(this, "Sorry your device does NOT support MultiTouch!\n\n(No PinchZoom is possible!)", Toast.LENGTH_LONG).show();
 			}
 		} catch (final MultiTouchException e) {
 			Toast.makeText(this, "Sorry your Android Version does NOT support MultiTouch!\n\n(No PinchZoom is possible!)", Toast.LENGTH_LONG).show();
@@ -82,7 +82,6 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 
 		scene = new Scene();
 		
-		
 		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")));
 		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Flame Tower")));
 		for (Tower tower : level.towers) {
@@ -102,19 +101,15 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 			
 			scene.attachChild(new Mob(0,0, 48, 64, mobRegion, path));
 		}
-		
 		return scene;
 	}
 
 	@Override
 	public void onLoadComplete() {
 		// TODO Auto-generated method stub
-		
 	}
 
-
 	void cycle(){
-		
 	}
 	
 	//MULTITOUCH STUFF
@@ -128,35 +123,35 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 
 	@Override
 	public void onPinchZoomStarted(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent) {
-		mPinchZoomStartedCameraZoomFactor = zoomCamera.getZoomFactor();
+		pinchZoomStartedCameraZoomFactor = zoomCamera.getZoomFactor();
 	}
 
 	@Override
 	public void onPinchZoom(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent, final float pZoomFactor) {
-		zoomCamera.setZoomFactor(mPinchZoomStartedCameraZoomFactor * pZoomFactor);
+		zoomCamera.setZoomFactor(pinchZoomStartedCameraZoomFactor * pZoomFactor);
 	}
 
 	@Override
 	public void onPinchZoomFinished(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent, final float pZoomFactor) {
-		zoomCamera.setZoomFactor(mPinchZoomStartedCameraZoomFactor * pZoomFactor);
+		zoomCamera.setZoomFactor(pinchZoomStartedCameraZoomFactor * pZoomFactor);
 	}
 
 
 	@Override
 	public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
-		if(mPinchZoomDetector != null) {
-			mPinchZoomDetector.onTouchEvent(pSceneTouchEvent);
+		if(pinchZoomDetector != null) {
+			pinchZoomDetector.onTouchEvent(pSceneTouchEvent);
 
-			if(mPinchZoomDetector.isZooming()) {
-				mScrollDetector.setEnabled(false);
+			if(pinchZoomDetector.isZooming()) {
+				scrollDetector.setEnabled(false);
 			} else {
 				if(pSceneTouchEvent.isActionDown()) {
-					mScrollDetector.setEnabled(true);
+					scrollDetector.setEnabled(true);
 				}
-				mScrollDetector.onTouchEvent(pSceneTouchEvent);
+				scrollDetector.onTouchEvent(pSceneTouchEvent);
 			}
 		} else {
-			mScrollDetector.onTouchEvent(pSceneTouchEvent);
+			scrollDetector.onTouchEvent(pSceneTouchEvent);
 		}
 
 		return true;
