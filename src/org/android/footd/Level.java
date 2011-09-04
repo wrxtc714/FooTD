@@ -80,6 +80,8 @@ public class Level {
 		level.fullBackGround = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGroundAtlas, context, background, 0, 0);
 		engine.getTextureManager().loadTexture(backGroundAtlas);
 		
+		level.waves.add(new Wave(engine, context));
+		
 				
 		return level;
 	}
@@ -88,7 +90,7 @@ public class Level {
 		return null; //TODO
 	}
 	
-	public void load(Scene scene) {
+	public void init(Scene scene) {
 		/* Calculate the coordinates for the face, so its centered on the camera. */
 //		final int centerX = (- fullBackGround.getWidth()) / 2;
 //		final int centerY = (- fullBackGround.getHeight()) / 2;
@@ -96,6 +98,10 @@ public class Level {
 		/* Create the face and add it to the scene. */
 		final Sprite backGroundSprite = new Sprite(0, 0, fullBackGround);
 		scene.attachChild(backGroundSprite);
+		
+		for(Wave wave : waves) {
+			wave.init(scene);
+		}
 		
 	}
 	

@@ -5,7 +5,6 @@ import org.anddev.andengine.engine.camera.ZoomCamera;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.util.FPSLogger;
@@ -18,10 +17,7 @@ import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.input.touch.detector.ScrollDetector;
 import org.anddev.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
-import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.graphics.Point;
@@ -35,7 +31,6 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 	private Scene scene;
 	private ZoomCamera zoomCamera;
 	private Level level;
-	private TiledTextureRegion mobRegion;
 	
 	//mutitouch stuff
 	private SurfaceScrollDetector scrollDetector;
@@ -65,9 +60,6 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		BitmapTextureAtlas mobAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
-		mobRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mobAtlas, this, "player.png", 0, 0, 3, 4);
-		mEngine.getTextureManager().loadTexture(mobAtlas);
 		
 		level = Level.createTestLevel(this, mEngine, "grass2.jpg");
 		
@@ -78,25 +70,10 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		mEngine.registerUpdateHandler(new FPSLogger());
 
 		scene = new Scene();
-		level.load(scene);
+		level.init(scene);
 		
 		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")), scene);
 		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Cannon Tower")), scene);
-		
-		
-		for (int i = 0; i < 20; i++){
-			
-			int mobTranslation = i * 50;
-			
-			final Path path = new Path(5)
-				.to(mobTranslation, 10)
-				.to(mobTranslation, CAMERA_HEIGHT - 74)
-				.to(mobTranslation + CAMERA_WIDTH - 58, CAMERA_HEIGHT - 74)
-				.to(mobTranslation + CAMERA_WIDTH - 58, 10)
-				.to(mobTranslation, 10);
-			
-			scene.attachChild(new Mob(0,0, 48, 64, mobRegion, path));
-		}
 		
 		// TOUCH STUFF
 		scrollDetector = new SurfaceScrollDetector(this);
