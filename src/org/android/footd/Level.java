@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.entity.sprite.TiledSprite;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 
@@ -42,7 +43,7 @@ public class Level {
 	 * @param context BaseGameActivity
 	 * @return the created level
 	 */
-	public static Level createTestLevel(BitmapTextureAtlas bitmapTextureAtlas, Context context) {
+	public static Level createTestLevel(Context context, Engine engine) {
 		Level level = new Level(new Point(10,10));
 		
 		TowerType flameTowerType = new TowerType();
@@ -51,7 +52,9 @@ public class Level {
 		flameTowerType.speed = 100;
 		flameTowerType.damage = 5;
 		flameTowerType.size = new Point(1,1);
-		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, context, "banana_tiled.png", 0, 0, 4, 2);
+		BuildableBitmapTextureAtlas bitmapTextureAtlas = new BuildableBitmapTextureAtlas(512, 256, TextureOptions.NEAREST);
+		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, context, "banana_tiled.png", 4, 2);
+		engine.getTextureManager().loadTexture(bitmapTextureAtlas);
 		level.towerTypes.put(flameTowerType.name, flameTowerType);
 		
 		TowerType cannonTowerType = new TowerType();
@@ -60,7 +63,9 @@ public class Level {
 		cannonTowerType.speed = 5;
 		cannonTowerType.damage = 100;
 		cannonTowerType.size = new Point(2,2);
-		cannonTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, context, "helicopter_tiled.png", 0, 0, 2, 2);
+		BuildableBitmapTextureAtlas bitmapTextureAtlas2 = new BuildableBitmapTextureAtlas(512, 256, TextureOptions.NEAREST);
+		cannonTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas2, context, "helicopter_tiled.png", 2, 2);
+		engine.getTextureManager().loadTexture(bitmapTextureAtlas2);
 		level.towerTypes.put(cannonTowerType.name, cannonTowerType);
 		
 				
