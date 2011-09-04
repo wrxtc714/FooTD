@@ -7,10 +7,6 @@ import org.anddev.andengine.engine.camera.ZoomCamera;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.IEntity;
-import org.anddev.andengine.entity.modifier.LoopEntityModifier;
-import org.anddev.andengine.entity.modifier.PathModifier;
-import org.anddev.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
@@ -35,8 +31,6 @@ import org.anddev.andengine.opengl.texture.region.BaseTextureRegion;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
-import org.anddev.andengine.util.Debug;
-import org.anddev.andengine.util.modifier.ease.EaseSineInOut;
 
 import android.widget.Toast;
 
@@ -99,6 +93,10 @@ public class FooTD extends BaseGameActivity implements IOnSceneTouchListener, IS
 	public void onLoadResources() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
+		BitmapTextureAtlas backGroundAtlas = new BitmapTextureAtlas(2048, 2048, TextureOptions.BILINEAR);
+		this.mGrassTex = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGroundAtlas, this, "grass2.jpg", 0, 0);
+		this.mEngine.getTextureManager().loadTexture(backGroundAtlas);
+		
 		BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(512,	256, TextureOptions.NEAREST);
 		this.mSnapdragonTex = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, this, "snapdragon_tiled.png", 0, 0, 4, 3);
 		this.mHelicopterTex = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, this, "helicopter_tiled.png", 400, 0, 2, 2);
@@ -110,10 +108,6 @@ public class FooTD extends BaseGameActivity implements IOnSceneTouchListener, IS
 		this.mExploTex = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(exploAtlas, this, "explosion.png", 0, 0, 4, 4);
 		this.mExploTex2 = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(exploAtlas, this, "explosion2.png", 256, 0, 4, 4);
 		this.mEngine.getTextureManager().loadTexture(exploAtlas);
-		
-		BitmapTextureAtlas backGroundAtlas = new BitmapTextureAtlas(2048, 2048, TextureOptions.BILINEAR);
-		this.mGrassTex = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGroundAtlas, this, "grass2.jpg", 0, 0);
-		this.mEngine.getTextureManager().loadTexture(backGroundAtlas);
 		
 		BitmapTextureAtlas backGround2Atlas = new BitmapTextureAtlas(1024, 512, TextureOptions.BILINEAR);
 		this.mSpaceTex = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGround2Atlas, this, "space.jpg", 0, 0);
@@ -193,53 +187,21 @@ public class FooTD extends BaseGameActivity implements IOnSceneTouchListener, IS
 		this.mScene.setTouchAreaBindingEnabled(true);		
 		
 		/* Create the face and add it to the scene. */
-		final AnimatedSprite player = new AnimatedSprite(10, 10, 48, 64, this.mPlayerTextureRegion);
-
-		final Path path = new Path(5)
-			.to(10, 10)
-			.to(10, CAMERA_HEIGHT - 74)
-			.to(CAMERA_WIDTH - 58, CAMERA_HEIGHT - 74)
-			.to(CAMERA_WIDTH - 58, 10)
-			.to(10, 10);
-
-		/* Add the proper animation when a waypoint of the path is passed. */
-		player.registerEntityModifier(new LoopEntityModifier(new PathModifier(30, path, null, new IPathModifierListener() {
-			@Override
-			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
-				Debug.d("onPathStarted");
-			}
-
-			@Override
-			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-				Debug.d("onPathWaypointStarted:  " + pWaypointIndex);
-				switch(pWaypointIndex) {
-					case 0:
-						player.animate(new long[]{200, 200, 200}, 6, 8, true);
-						break;
-					case 1:
-						player.animate(new long[]{200, 200, 200}, 3, 5, true);
-						break;
-					case 2:
-						player.animate(new long[]{200, 200, 200}, 0, 2, true);
-						break;
-					case 3:
-						player.animate(new long[]{200, 200, 200}, 9, 11, true);
-						break;
-				}
-			}
-
-			@Override
-			public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-				Debug.d("onPathWaypointFinished: " + pWaypointIndex);
-			}
-
-			@Override
-			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-				Debug.d("onPathFinished");
-			}
-		}, EaseSineInOut.getInstance())));
-		this.mScene.attachChild(player);
+//		final AnimatedSprite player = new AnimatedSprite(10, 10, 48, 64, this.mPlayerTextureRegion);
 		
+		for (int i = 0; i < 20; i++){
+			
+			int mobTranslation = i * 50;
+			
+			final Path path = new Path(5)
+			.to(mobTranslation, 10)
+			.to(mobTranslation, CAMERA_HEIGHT - 74)
+			.to(mobTranslation + CAMERA_WIDTH - 58, CAMERA_HEIGHT - 74)
+			.to(mobTranslation + CAMERA_WIDTH - 58, 10)
+			.to(mobTranslation, 10);
+			
+			this.mScene.attachChild(new Mob(0,0, 48, 64, this.mPlayerTextureRegion, path));
+		}
 		
 		
 		return this.mScene;
