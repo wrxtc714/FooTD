@@ -28,8 +28,8 @@ public class Wave {
 			
 			final Path path = new Path(5)
 			.to(mobTranslation, 10)
-			.to(mobTranslation, 74)
-			.to(mobTranslation - 58, - 74)
+			.to(mobTranslation, 500)
+			.to(mobTranslation - 58, 500)
 			.to(mobTranslation - 58, 10)
 			.to(mobTranslation, 10);
 			

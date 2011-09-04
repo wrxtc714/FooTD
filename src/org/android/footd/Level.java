@@ -13,7 +13,10 @@ import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.source.AssetBitmapTextureAtlasSource;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -38,11 +41,48 @@ public class Level {
 		return placedObjects[x][y] == null;
 	}
 	
-	
 	public Level(Point size) {
 		placedObjects = new GridObject[size.x][size.y];
 	}
-
+	
+	public static int toNextPowerOfTwo(int foo) {
+		int powerOfTwoInt = 2;
+		while (foo > powerOfTwoInt)
+			powerOfTwoInt *= 2;
+		return powerOfTwoInt;
+	}
+	
+	
+	public static Point getOptimalSamplerSize(Context context, String name) {
+		//TODO hardcoded source folder. there is no BitmapTextureAtlasTextureRegionFactory.getAssetBasePath :(
+		final IBitmapTextureAtlasSource bitmapTextureAtlasSource = 
+			new AssetBitmapTextureAtlasSource(context, "gfx/" + name);
+		
+		Point size = new Point();
+		size.x = toNextPowerOfTwo(bitmapTextureAtlasSource.getWidth());
+		size.y = toNextPowerOfTwo(bitmapTextureAtlasSource.getHeight());
+		
+		return size;
+	}
+	public static TiledTextureRegion readSprite(Engine engine, Context context, Point tiles, String name) {
+		return readSprite(engine, context, tiles, name, TextureOptions.DEFAULT);
+	}
+	
+	public static TiledTextureRegion readSprite(Engine engine, Context context, Point tiles, String name, final TextureOptions textureOptions) {
+		Point size = getOptimalSamplerSize(context, name);
+		BitmapTextureAtlas atlas = new BitmapTextureAtlas(size.x, size.y, textureOptions);
+		TiledTextureRegion sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(atlas, context, name, 0, 0, tiles.x, tiles.y);
+		engine.getTextureManager().loadTexture(atlas);
+		return sprite;
+	}
+	
+	public static TextureRegion readSprite(Engine engine, Context context, String name, final TextureOptions textureOptions) {
+		Point size = getOptimalSamplerSize(context, name);
+		BitmapTextureAtlas atlas = new BitmapTextureAtlas(size.x, size.y, textureOptions);
+		TextureRegion sprite = BitmapTextureAtlasTextureRegionFactory.createFromAsset(atlas, context, name, 0, 0);
+		engine.getTextureManager().loadTexture(atlas);
+		return sprite;
+	}
 
 	/**
 	 * creates basic level for testing purposes
@@ -58,9 +98,7 @@ public class Level {
 		flameTowerType.speed = 100;
 		flameTowerType.damage = 5;
 		flameTowerType.size = new Point(1,1);
-		BitmapTextureAtlas flameTowerTypeAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
-		flameTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(flameTowerTypeAtlas, context, "helicopter_tiled.png", 0, 0, 2, 2);
-		engine.getTextureManager().loadTexture(flameTowerTypeAtlas);
+		flameTowerType.sprite = readSprite(engine, context, new Point(2, 2), "helicopter_tiled.png");
 		level.towerTypes.put(flameTowerType.name, flameTowerType);
 		
 		TowerType cannonTowerType = new TowerType();
@@ -69,19 +107,11 @@ public class Level {
 		cannonTowerType.speed = 5;
 		cannonTowerType.damage = 100;
 		cannonTowerType.size = new Point(2,2);
-		BitmapTextureAtlas cannonTowerTypeAtlas = new BitmapTextureAtlas(256, 128, TextureOptions.DEFAULT);
-		cannonTowerType.sprite = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(cannonTowerTypeAtlas, context, "banana_tiled.png", 0, 0, 4, 2);
-		engine.getTextureManager().loadTexture(cannonTowerTypeAtlas);
+		cannonTowerType.sprite = readSprite(engine, context, new Point(4, 2), "banana_tiled.png");
 		level.towerTypes.put(cannonTowerType.name, cannonTowerType);
 		
-		// Load Background Recources
-		
-		BitmapTextureAtlas backGroundAtlas = new BitmapTextureAtlas(2048, 2048, TextureOptions.BILINEAR);
-		level.fullBackGround = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backGroundAtlas, context, background, 0, 0);
-		engine.getTextureManager().loadTexture(backGroundAtlas);
-		
+		level.fullBackGround = readSprite(engine, context, background, TextureOptions.BILINEAR);
 		level.waves.add(new Wave(engine, context));
-		
 				
 		return level;
 	}
@@ -91,7 +121,6 @@ public class Level {
 	}
 	
 	public void init(Scene scene) {
-		/* Calculate the coordinates for the face, so its centered on the camera. */
 //		final int centerX = (- fullBackGround.getWidth()) / 2;
 //		final int centerY = (- fullBackGround.getHeight()) / 2;
 
