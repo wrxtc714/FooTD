@@ -2,6 +2,8 @@ package org.android.footd;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.ZoomCamera;
+import org.anddev.andengine.engine.handler.timer.ITimerCallback;
+import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
@@ -73,6 +75,16 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		
 		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")), scene);
 		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Cannon Tower")), scene);
+		
+		
+		//Spawn Mobs evey time
+		scene.registerUpdateHandler(new TimerHandler(2f, true, new ITimerCallback() {
+			@Override
+			public void onTimePassed(final TimerHandler pTimerHandler) {
+				level.spawnMob(scene);
+			}
+		}));
+		
 		
 		// TOUCH STUFF
 		scrollDetector = new SurfaceScrollDetector(this);

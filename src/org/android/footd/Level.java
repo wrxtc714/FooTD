@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.anddev.andengine.engine.Engine;
+import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.sprite.TiledSprite;
@@ -31,6 +32,7 @@ public class Level {
 	List<Wave> waves = new ArrayList<Wave>();
 	List<GridObject> entrances = new ArrayList<GridObject>();
 	List<GridObject> exits = new ArrayList<GridObject>();
+	Wave currentWave;
 	
 	private TextureRegion fullBackGround;
 	
@@ -52,7 +54,6 @@ public class Level {
 		return powerOfTwoInt;
 	}
 	
-	
 	public static Point getOptimalSamplerSize(Context context, String name) {
 		//TODO hardcoded source folder. there is no BitmapTextureAtlasTextureRegionFactory.getAssetBasePath :(
 		final IBitmapTextureAtlasSource bitmapTextureAtlasSource = 
@@ -64,6 +65,8 @@ public class Level {
 		
 		return size;
 	}
+	
+	// Tiled Sprites
 	public static TiledTextureRegion readSprite(Engine engine, Context context, Point tiles, String name) {
 		return readSprite(engine, context, tiles, name, TextureOptions.DEFAULT);
 	}
@@ -76,6 +79,7 @@ public class Level {
 		return sprite;
 	}
 	
+	// Full Sprites
 	public static TextureRegion readSprite(Engine engine, Context context, String name, final TextureOptions textureOptions) {
 		Point size = getOptimalSamplerSize(context, name);
 		BitmapTextureAtlas atlas = new BitmapTextureAtlas(size.x, size.y, textureOptions);
@@ -112,12 +116,16 @@ public class Level {
 		
 		level.fullBackGround = readSprite(engine, context, background, TextureOptions.BILINEAR);
 		level.waves.add(new Wave(engine, context));
-				
+		level.currentWave = level.waves.get(0);
 		return level;
 	}
 	
 	public static Level createLevelFromXML(BuildableBitmapTextureAtlas bitmapTextureAtlas, Context context) {
 		return null; //TODO
+	}
+	
+	public void spawnMob(Scene scene) {
+		currentWave.spawnMob(scene);
 	}
 	
 	public void init(Scene scene) {
@@ -127,10 +135,6 @@ public class Level {
 		/* Create the face and add it to the scene. */
 		final Sprite backGroundSprite = new Sprite(0, 0, fullBackGround);
 		scene.attachChild(backGroundSprite);
-		
-		for(Wave wave : waves) {
-			wave.init(scene);
-		}
 		
 	}
 	

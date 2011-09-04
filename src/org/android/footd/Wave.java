@@ -3,39 +3,36 @@ package org.android.footd;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.scene.Scene;
-import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.content.Context;
+import android.graphics.Point;
 
 public class Wave {
+	
+	int spawnedMobs;
+	int waveSize;
 	
 	private TiledTextureRegion mobRegion;
 	
 	public Wave(Engine engine, Context context) {
-		BitmapTextureAtlas mobAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.DEFAULT);
-		mobRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mobAtlas, context, "player.png", 0, 0, 3, 4);
-		engine.getTextureManager().loadTexture(mobAtlas);
-		
+		waveSize = 50;
+		mobRegion = Level.readSprite(engine, context, new Point(3,4), "player.png");
 	}
 	
-	public void init(Scene scene){
-		for (int i = 0; i < 20; i++){
-			
-			int mobTranslation = i * 50;
-			
-			final Path path = new Path(5)
-			.to(mobTranslation, 10)
-			.to(mobTranslation, 500)
-			.to(mobTranslation - 58, 500)
-			.to(mobTranslation - 58, 10)
-			.to(mobTranslation, 10);
-			
-			scene.attachChild(new Mob(0,0, 48, 64, mobRegion, path));
-		}
+	public void spawnMob(Scene scene) {
+		if (spawnedMobs >= waveSize)
+			return;
 		
+		final Path path = new Path(5)
+		.to(50, 10)
+		.to(50, 500)
+		.to(50 - 58, 500)
+		.to(50 - 58, 10)
+		.to(50, 10);
+		
+		scene.attachChild(new Mob(0,0, 48, 64, mobRegion, path));
+		spawnedMobs++;
 	}
 
 }
