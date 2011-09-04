@@ -9,6 +9,7 @@ public class Tower extends GridObject {
 	
 	public Tower(Point gridCoord, TowerType type) {
 		super(gridCoord, type.sprite);
+		this.type = type;
 	}
 
 }
