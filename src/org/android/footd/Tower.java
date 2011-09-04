@@ -1,18 +1,14 @@
 package org.android.footd;
 
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
-
 import android.graphics.Point;
 
-public class Tower extends AnimatedSprite {
+
+public class Tower extends GridObject {
 
 	TowerType type;
-	Point coord;
 	
-	public Tower(float pX, float pY, TiledTextureRegion pTiledTextureRegion) {
-		super(pX, pY, pTiledTextureRegion);
-		// TODO Auto-generated constructor stub
+	public Tower(Point gridCoord, TowerType type) {
+		super(gridCoord, type.sprite);
 	}
 
 }
