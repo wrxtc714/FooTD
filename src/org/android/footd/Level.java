@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.anddev.andengine.engine.Engine;
-import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.sprite.TiledSprite;
@@ -124,10 +123,6 @@ public class Level {
 		return null; //TODO
 	}
 	
-	public void spawnMob(Scene scene) {
-		currentWave.spawnMob(scene);
-	}
-	
 	public void init(Scene scene) {
 //		final int centerX = (- fullBackGround.getWidth()) / 2;
 //		final int centerY = (- fullBackGround.getHeight()) / 2;
@@ -135,6 +130,7 @@ public class Level {
 		/* Create the face and add it to the scene. */
 		final Sprite backGroundSprite = new Sprite(0, 0, fullBackGround);
 		scene.attachChild(backGroundSprite);
+		currentWave.init(scene);
 		
 	}
 	
