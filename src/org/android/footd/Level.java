@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.entity.scene.Scene;
+import org.anddev.andengine.entity.scene.background.SpriteBackground;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.sprite.TiledSprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
@@ -33,7 +34,7 @@ public class Level {
 	List<GridObject> exits = new ArrayList<GridObject>();
 	Wave currentWave;
 	
-	private TextureRegion fullBackGround;
+	private TextureRegion groundArea, backgroundArea;
 	
 	GridObject[][] placedObjects;
 	TiledSprite background;
@@ -92,7 +93,11 @@ public class Level {
 	 * @param context BaseGameActivity
 	 * @return the created level
 	 */
-	public static Level createTestLevel(Context context, Engine engine, String background) {
+	public static Level createTestLevel(Context context, Engine engine) {
+		
+		String ground = "grass2.jpg";
+		String background = "space.jpg";
+		
 		Level level = new Level(new Point(10,10));
 		
 		TowerType flameTowerType = new TowerType();
@@ -113,7 +118,8 @@ public class Level {
 		cannonTowerType.sprite = readSprite(engine, context, new Point(4, 2), "banana_tiled.png");
 		level.towerTypes.put(cannonTowerType.name, cannonTowerType);
 		
-		level.fullBackGround = readSprite(engine, context, background, TextureOptions.BILINEAR);
+		level.groundArea = readSprite(engine, context, ground, TextureOptions.BILINEAR);
+		level.backgroundArea = readSprite(engine, context, background, TextureOptions.BILINEAR);
 		level.waves.add(new Wave(engine, context));
 		level.currentWave = level.waves.get(0);
 		return level;
@@ -128,8 +134,13 @@ public class Level {
 //		final int centerY = (- fullBackGround.getHeight()) / 2;
 
 		/* Create the face and add it to the scene. */
-		final Sprite backGroundSprite = new Sprite(0, 0, fullBackGround);
-		scene.attachChild(backGroundSprite);
+		final Sprite groundSprite = new Sprite(0, 0, groundArea);
+		scene.attachChild(groundSprite);
+		
+		
+		final Sprite backgroundSprite = new Sprite(0, 0, backgroundArea);
+		scene.setBackground(new SpriteBackground(backgroundSprite));
+		
 		currentWave.init(scene);
 		
 	}

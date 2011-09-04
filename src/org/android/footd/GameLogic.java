@@ -60,7 +60,7 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		level = Level.createTestLevel(this, mEngine, "grass2.jpg");
+		level = Level.createTestLevel(this, mEngine);
 		
 	}
 
