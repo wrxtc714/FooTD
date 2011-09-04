@@ -21,7 +21,6 @@ import org.anddev.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.anddev.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
@@ -80,11 +79,8 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 
 		scene = new Scene();
 		
-		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")));
-		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Flame Tower")));
-		for (Tower tower : level.towers) {
-			scene.attachChild(tower);
-		}
+		level.addTower(new Tower(new Point(3,6), level.towerTypes.get("Flame Tower")), scene);
+		level.addTower(new Tower(new Point(7,2), level.towerTypes.get("Flame Tower")), scene);
 		
 		for (int i = 0; i < 20; i++){
 			
