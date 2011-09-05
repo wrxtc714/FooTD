@@ -7,7 +7,7 @@ import org.anddev.andengine.entity.modifier.PathModifier.IPathModifierListener;
 import org.anddev.andengine.entity.modifier.PathModifier.Path;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.util.Debug;
-import org.anddev.andengine.util.modifier.ease.EaseSineInOut;
+import org.anddev.andengine.util.modifier.ease.EaseLinear;
 
 import android.graphics.Point;
 
@@ -25,12 +25,16 @@ public class Mob extends AnimatedSprite {
 		this.type = type;
 		setPath(path);
 	}
-
+	
 	public void animateRange(Point range) {
+		animateRange(range, 200);
+	}
+
+	public void animateRange(Point range, int frameTime) {
 		int rangesize = range.y-range.x+1;
 		long[] times = new long[rangesize];
 		for (int i = 0; i < rangesize; i++)
-			times[i] = 200;
+			times[i] = (int)(frameTime / type.speed);
 
 		animate(times, range.x, range.y, true);
 	}
@@ -77,14 +81,12 @@ public class Mob extends AnimatedSprite {
 	}
 	public void setPath(final Path path) {
 		this.path = path;
-		float duration = 30;
-//		float duration = 5;
+		float duration = 30 / type.speed;
 
 		/* Add the proper animation when a waypoint of the path is passed. */
 		registerEntityModifier(new LoopEntityModifier(new PathModifier(duration, path, null, new IPathModifierListener() {
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
-				Debug.d("onPathStarted");
 			}
 
 			@Override
@@ -92,7 +94,7 @@ public class Mob extends AnimatedSprite {
 				Debug.d("onPathWaypointStarted:  " + pWaypointIndex);
 
 				if (type.ranges.isEmpty()) {
-					animate(200);
+					animate((int)(200 / type.speed));
 				}else if (type.ranges.containsKey("whole")) {
 					animateRange(type.ranges.get("whole"));
 				}else if (type.ranges.containsKey("up")) {
@@ -102,13 +104,11 @@ public class Mob extends AnimatedSprite {
 
 			@Override
 			public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-				Debug.d("onPathWaypointFinished: " + pWaypointIndex);
 			}
 
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-				Debug.d("onPathFinished");
 			}
-		}, EaseSineInOut.getInstance())));
+		}, EaseLinear.getInstance())));
 	}
 }
