@@ -31,17 +31,18 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 	private Scene scene;
 	private ZoomCamera zoomCamera;
 	private Level level;
-	
+
 	//mutitouch stuff
 	private SurfaceScrollDetector scrollDetector;
 	private PinchZoomDetector pinchZoomDetector;
 	private float pinchZoomStartedCameraZoomFactor;
-	
+	private float backgroundZoomFactor;
+
 	@Override
-	public Engine onLoadEngine() {		
+	public Engine onLoadEngine() {
 		zoomCamera = new ZoomCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		final Engine engine = new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), zoomCamera));
-		
+
 		try {
 			if(MultiTouch.isSupported(this)) {
 				engine.setTouchController(new MultiTouchController());
@@ -100,29 +101,41 @@ public class GameLogic extends BaseGameActivity implements IOnSceneTouchListener
 
 	void cycle(){
 	}
-	
+
 	//MULTITOUCH STUFF
-	
-	
+
+	void setZoom(float factor) {
+		zoomCamera.setZoomFactor(pinchZoomStartedCameraZoomFactor * factor);
+//		level.backgroundSprite.setScale((backgroundZoomFactor / factor)*factor);
+//		setBackGroundPositionToCamera();
+	}
+
+	void setBackGroundPositionToCamera() {
+		level.backgroundSprite.setPosition(zoomCamera.getMinX()-200,zoomCamera.getMinY());
+	}
+
+
 	@Override
 	public void onScroll(final ScrollDetector pScollDetector, final TouchEvent pTouchEvent, final float pDistanceX, final float pDistanceY) {
 		final float zoomFactor = zoomCamera.getZoomFactor();
 		zoomCamera.offsetCenter(-pDistanceX / zoomFactor, -pDistanceY / zoomFactor);
+//		setBackGroundPositionToCamera();
 	}
 
 	@Override
 	public void onPinchZoomStarted(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent) {
 		pinchZoomStartedCameraZoomFactor = zoomCamera.getZoomFactor();
+//		backgroundZoomFactor = level.backgroundSprite.getScaleX();
 	}
 
 	@Override
 	public void onPinchZoom(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent, final float pZoomFactor) {
-		zoomCamera.setZoomFactor(pinchZoomStartedCameraZoomFactor * pZoomFactor);
+		setZoom(pZoomFactor);
 	}
 
 	@Override
 	public void onPinchZoomFinished(final PinchZoomDetector pPinchZoomDetector, final TouchEvent pTouchEvent, final float pZoomFactor) {
-		zoomCamera.setZoomFactor(pinchZoomStartedCameraZoomFactor * pZoomFactor);
+		setZoom(pZoomFactor);
 	}
 
 

@@ -33,11 +33,11 @@ public class Level {
 	List<GridObject> entrances = new ArrayList<GridObject>();
 	List<GridObject> exits = new ArrayList<GridObject>();
 	Wave currentWave;
+	public Sprite backgroundSprite;
 	
 	private TextureRegion groundArea, backgroundArea;
 	
 	GridObject[][] placedObjects;
-	TiledSprite background;
 
 	Boolean isCellFree(int x, int y){
 		return placedObjects[x][y] == null;
@@ -130,19 +130,16 @@ public class Level {
 	}
 	
 	public void init(Scene scene) {
-//		final int centerX = (- fullBackGround.getWidth()) / 2;
-//		final int centerY = (- fullBackGround.getHeight()) / 2;
+		backgroundSprite = new Sprite(0, 0, backgroundArea);
+//		backgroundSprite.setScaleCenter(0,0);
+//		scene.attachChild(backgroundSprite);
+		scene.setBackground(new SpriteBackground(backgroundSprite));
 
 		/* Create the face and add it to the scene. */
 		final Sprite groundSprite = new Sprite(0, 0, groundArea);
 		scene.attachChild(groundSprite);
 		
-		
-		final Sprite backgroundSprite = new Sprite(0, 0, backgroundArea);
-		scene.setBackground(new SpriteBackground(backgroundSprite));
-		
 		currentWave.init(scene);
-		
 	}
 	
 	public void addTower(Tower tower, Scene scene) {
