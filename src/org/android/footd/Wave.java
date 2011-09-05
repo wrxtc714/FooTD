@@ -18,6 +18,7 @@ public class Wave {
 	float spawnInterval;
 	Path path;
 	List<Mob> mobs = new ArrayList<Mob>();
+	TimerHandler spawnHandler;
 
 	public Wave(Engine engine, Context context) {
 		spawnInterval = 2f;
@@ -47,7 +48,7 @@ public class Wave {
 		MobType explosion = new MobType(engine, context, 1, new Point(4,4), "explosion2.png", 2);
 		MobType star = new MobType(engine, context, 1, new Point(25,3), "star-green.png", 4);
 //		star.ranges.put("whole", new Point(0,70));
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 5; i++) {
 			mobs.add(new Mob(banana, path));
 			mobs.add(new Mob(explosion, path));
 			mobs.add(new Mob(star, path));
@@ -56,17 +57,20 @@ public class Wave {
 
 	public void init(final Scene scene) {
 		//Spawn Mobs event
-		scene.registerUpdateHandler(new TimerHandler(spawnInterval, true, new ITimerCallback() {
+		spawnHandler = new TimerHandler(spawnInterval, true, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
 				spawnMob(scene);
 			}
-		}));
+		});
+		scene.registerUpdateHandler(spawnHandler);
 	}
 
 	public void spawnMob(Scene scene) {
-		if (spawnedMobs >= mobs.size())
+		if (spawnedMobs >= mobs.size()) {
+			scene.unregisterUpdateHandler(spawnHandler);
 			return;
+		}
 		scene.attachChild(mobs.get(spawnedMobs));
 		spawnedMobs++;
 	}
