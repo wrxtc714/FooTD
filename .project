@@ -41,5 +41,10 @@
 			<type>2</type>
 			<locationURI>_android_AndEngineMultiTouchExtension_388759c0/src</locationURI>
 		</link>
+		<link>
+			<name>AndEnginePhysicsBox2DExtension</name>
+			<type>2</type>
+			<location>_android_AndEnginePhysicsBox2DExtension_83d4a030/src</location>
+		</link>
 	</linkedResources>
 </projectDescription>
