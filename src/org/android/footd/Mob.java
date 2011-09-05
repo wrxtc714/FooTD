@@ -14,32 +14,32 @@ import android.graphics.Point;
 import com.badlogic.gdx.math.Vector2;
 
 public class Mob extends AnimatedSprite {
-	
+
 	MobType type;
 	int level;
 	Path path;
 
 	public Mob(MobType type, Path path) {
-		super(0, 0, type.size.x, type.size.y, type.texture);
+		super(0, 0, type.getWidth(), type.getHeight(), type.texture);
 //		super(0, 0, type.texture);
 		this.type = type;
 		setPath(path);
 	}
-	
+
 	public void animateRange(Point range) {
 		int rangesize = range.y-range.x+1;
-		long[] times = new long[rangesize]; 
+		long[] times = new long[rangesize];
 		for (int i = 0; i < rangesize; i++)
 			times[i] = 200;
-		
+
 		animate(times, range.x, range.y, true);
 	}
-	
+
 	public void animateRange(String rangeName) {
 		if (type.ranges.containsKey(rangeName))
 			animateRange(type.ranges.get(rangeName));
 	}
-	
+
 	public void chooseWalkAnimation(int pathIndex) {
 		Vector2 currentCoord = new Vector2();
 		currentCoord.x = path.getCoordinatesX()[pathIndex];
@@ -79,18 +79,18 @@ public class Mob extends AnimatedSprite {
 		this.path = path;
 		float duration = 30;
 //		float duration = 5;
-		
+
 		/* Add the proper animation when a waypoint of the path is passed. */
 		registerEntityModifier(new LoopEntityModifier(new PathModifier(duration, path, null, new IPathModifierListener() {
 			@Override
 			public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
 				Debug.d("onPathStarted");
 			}
-	
+
 			@Override
 			public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
 				Debug.d("onPathWaypointStarted:  " + pWaypointIndex);
-				
+
 				if (type.ranges.isEmpty()) {
 					animate(200);
 				}else if (type.ranges.containsKey("whole")) {
@@ -99,12 +99,12 @@ public class Mob extends AnimatedSprite {
 					chooseWalkAnimation(pWaypointIndex);
 				}
 			}
-	
+
 			@Override
 			public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
 				Debug.d("onPathWaypointFinished: " + pWaypointIndex);
 			}
-	
+
 			@Override
 			public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
 				Debug.d("onPathFinished");
