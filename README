@@ -1,6 +1,13 @@
 FooTD
 
+License: GPLv3
+
 Dependencies:
 
 hg clone https://code.google.com/p/andengine/
 hg clone https://code.google.com/p/andenginemultitouchextension/
+hg clone https://code.google.com/p/andenginephysicsbox2dextension/
+
+Eclipse Setup:
+
+Just import the AndEngine projects and FooTD into Eclipse.
